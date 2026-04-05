@@ -1,0 +1,87 @@
+'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+
+export default function RegisterPage() {
+  const router = useRouter()
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    const users = JSON.parse(localStorage.getItem('asela_users') || '[]')
+    
+    // Check if phone exists
+    if (users.find((u: any) => u.phone === phone)) {
+      alert('Phone number already registered!')
+      return
+    }
+
+    const newUser = { id: Date.now(), name, phone, password }
+    users.push(newUser)
+    
+    // Save to DB
+    localStorage.setItem('asela_users', JSON.stringify(users))
+    localStorage.setItem('currentUser', JSON.stringify(newUser)) // Auto login
+    
+    alert('Account created successfully! 🎉')
+    router.push('/')
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 p-4">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center mb-6">Create Account 📝</h1>
+        
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 font-bold mb-2">Full Name</label>
+            <input
+              type="text"
+              placeholder="Abebe Bikila"
+              className="w-full p-3 border rounded-lg"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-bold mb-2">Phone Number</label>
+            <input
+              type="tel"
+              placeholder="0911 234 567"
+              className="w-full p-3 border rounded-lg"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="block text-gray-700 font-bold mb-2">Password</label>
+            <input
+              type="password"
+              placeholder="Choose a password"
+              className="w-full p-3 border rounded-lg"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit" className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">
+            Register
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-gray-600">
+          Already have an account? <Link href="/login" className="text-blue-600 font-bold hover:underline">Login</Link>
+        </p>
+      </div>
+    </div>
+  )
+}
