@@ -7,7 +7,7 @@ export default function CartPage() {
   const [cart, setCart] = useState<any[]>([])
 
   useEffect(() => {
-    // Load cart from localStorage
+    // Load cart from local storage
     const savedCart = localStorage.getItem('cart')
     if (savedCart) {
       setCart(JSON.parse(savedCart))
@@ -15,7 +15,7 @@ export default function CartPage() {
   }, [])
 
   useEffect(() => {
-    // Save cart to localStorage
+    // Save cart to local storage whenever it changes
     localStorage.setItem('cart', JSON.stringify(cart))
   }, [cart])
 
@@ -35,33 +35,35 @@ export default function CartPage() {
 
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
 
+  // 🛒 If cart is empty, show this message
   if (cart.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Your cart is empty</h1>
+          <h1 className="text-4xl font-bold mb-4">Your cart is empty 🛒</h1>
           <Link href="/products" className="text-blue-600 hover:underline text-xl">
-            Continue Shopping →
+            Go Shopping →
           </Link>
         </div>
       </div>
     )
   }
 
+  // 🛒 If cart has items, show this screen
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold mb-8">Shopping Cart</h1>
         
         <div className="grid md:grid-cols-3 gap-8">
-          {/* Cart Items */}
+          {/* 1. List of Items */}
           <div className="md:col-span-2 space-y-4">
             {cart.map((item) => (
-              <div key={item.id} className="bg-white p-6 rounded-lg shadow flex gap-4">
-                <div className="text-6xl">{item.image}</div>
+              <div key={item.id} className="bg-white p-6 rounded-lg shadow flex gap-4 items-center">
+                <div className="text-5xl">{item.image}</div>
                 <div className="flex-1">
                   <h3 className="font-bold text-lg">{item.name}</h3>
-                  <p className="text-gray-600">{item.price} ETB</p>
+                  <p className="text-gray-600">{item.price} ETB each</p>
                   
                   <div className="flex items-center gap-4 mt-4">
                     <button 
@@ -70,7 +72,7 @@ export default function CartPage() {
                     >
                       <Minus className="w-4 h-4" />
                     </button>
-                    <span className="font-bold">{item.quantity}</span>
+                    <span className="font-bold w-4 text-center">{item.quantity}</span>
                     <button 
                       onClick={() => updateQuantity(item.id, 1)}
                       className="bg-gray-200 p-2 rounded hover:bg-gray-300"
@@ -79,7 +81,7 @@ export default function CartPage() {
                     </button>
                     <button 
                       onClick={() => removeFromCart(item.id)}
-                      className="ml-auto text-red-600 hover:text-red-700"
+                      className="ml-auto text-red-500 hover:text-red-700"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
@@ -92,9 +94,9 @@ export default function CartPage() {
             ))}
           </div>
 
-          {/* Order Summary */}
+          {/* 2. Order Summary Box */}
           <div className="bg-white p-6 rounded-lg shadow h-fit">
-            <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
+            <h2 className="text-2xl font-bold mb-4">Summary</h2>
             <div className="space-y-2 mb-6">
               <div className="flex justify-between">
                 <span>Subtotal:</span>
@@ -109,9 +111,11 @@ export default function CartPage() {
                 <span>{total + 50} ETB</span>
               </div>
             </div>
+            
+            {/* ✅ THIS IS THE BUTTON THAT TAKES YOU TO CHECKOUT */}
             <Link 
               href="/checkout"
-              className="block w-full bg-yellow-500 text-blue-900 text-center py-3 rounded-lg font-bold hover:bg-yellow-400 transition"
+              className="block w-full bg-yellow-500 text-blue-900 text-center py-4 rounded-lg font-bold text-xl hover:bg-yellow-400 transition shadow-lg"
             >
               Proceed to Checkout
             </Link>
