@@ -1,0 +1,118 @@
+'use client'
+import { useState } from 'react'
+import Link from 'next/link'
+import { ShoppingCart } from 'lucide-react'
+
+// Sample products data
+const products = [
+  {
+    id: 1,
+    name: 'Ethiopian Premium Coffee',
+    price: 250,
+    category: 'coffee',
+    image: '☕',
+    description: 'Fresh roasted Arsi coffee beans - 500g'
+  },
+  {
+    id: 2,
+    name: 'Traditional Ethiopian Dress',
+    price: 850,
+    category: 'fashion',
+    image: '👗',
+    description: 'Beautiful handwoven Habesha kemis'
+  },
+  {
+    id: 3,
+    name: 'Berbere Spice Mix',
+    price: 120,
+    category: 'food',
+    image: '🌶️',
+    description: 'Authentic Ethiopian spice - 200g'
+  },
+  {
+    id: 4,
+    name: 'Wireless Headphones',
+    price: 1200,
+    category: 'electronics',
+    image: '🎧',
+    description: 'High quality Bluetooth headphones'
+  },
+  {
+    id: 5,
+    name: 'Coffee Ceremony Set',
+    price: 650,
+    category: 'home',
+    image: '🫖',
+    description: 'Traditional jebena and cups set'
+  },
+  {
+    id: 6,
+    name: 'Leather Sandals',
+    price: 450,
+    category: 'fashion',
+    image: '👞',
+    description: 'Handmade Ethiopian leather shoes'
+  }
+]
+
+export default function ProductsPage() {
+  const [cart, setCart] = useState<any[]>([])
+
+  const addToCart = (product: any) => {
+    const existingItem = cart.find(item => item.id === product.id)
+    if (existingItem) {
+      setCart(cart.map(item => 
+        item.id === product.id 
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      ))
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }])
+    }
+    alert(`${product.name} added to cart!`)
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-blue-900 text-white py-4">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <Link href="/" className="text-2xl font-bold">Asela Shopping 🇪</Link>
+          <Link href="/cart" className="flex items-center gap-2 bg-yellow-500 text-blue-900 px-4 py-2 rounded-lg font-bold">
+            <ShoppingCart className="w-5 h-5" />
+            Cart ({cart.length})
+          </Link>
+        </div>
+      </header>
+
+      {/* Products Grid */}
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-8 text-center">Our Products</h1>
+        
+        <div className="grid md:grid-cols-3 gap-6">
+          {products.map((product) => (
+            <div key={product.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="h-48 bg-gray-200 flex items-center justify-center text-8xl">
+                {product.image}
+              </div>
+              <div className="p-6">
+                <span className="text-sm text-blue-600 font-semibold uppercase">{product.category}</span>
+                <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+                <p className="text-gray-600 mb-4">{product.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-2xl font-bold text-blue-900">{product.price} ETB</span>
+                  <button 
+                    onClick={() => addToCart(product)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
